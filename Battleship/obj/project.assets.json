@@ -1,0 +1,132 @@
+{
+  "version": 3,
+  "targets": {
+    "net5.0-windows7.0": {
+      "Eurasia/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Torpedo": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Eurasia.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Eurasia.dll": {}
+        }
+      },
+      "Oceania/1.0.0": {
+        "type": "project",
+        "dependencies": {
+          "Torpedo": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Oceania.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Oceania.dll": {}
+        }
+      },
+      "Torpedo/1.0.0": {
+        "type": "project",
+        "compile": {
+          "bin/placeholder/Torpedo.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Torpedo.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Eurasia/1.0.0": {
+      "type": "project",
+      "path": "../Eurasia/Eurasia.csproj",
+      "msbuildProject": "../Eurasia/Eurasia.csproj"
+    },
+    "Oceania/1.0.0": {
+      "type": "project",
+      "path": "../Oceania/Oceania.csproj",
+      "msbuildProject": "../Oceania/Oceania.csproj"
+    },
+    "Torpedo/1.0.0": {
+      "type": "project",
+      "path": "../Torpedo/Torpedo.csproj",
+      "msbuildProject": "../Torpedo/Torpedo.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net5.0-windows7.0": [
+      "Eurasia >= 1.0.0",
+      "Oceania >= 1.0.0",
+      "Torpedo >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\seifely22\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Battleship\\Battleship.csproj",
+      "projectName": "Battleship",
+      "projectPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Battleship\\Battleship.csproj",
+      "packagesPath": "C:\\Users\\seifely22\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Battleship\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\seifely22\\AppData\\Roaming\\NuGet\\NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net5.0-windows7.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net5.0-windows7.0": {
+          "targetAlias": "net5.0-windows",
+          "projectReferences": {
+            "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Eurasia\\Eurasia.csproj": {
+              "projectPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Eurasia\\Eurasia.csproj"
+            },
+            "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Oceania\\Oceania.csproj": {
+              "projectPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Oceania\\Oceania.csproj"
+            },
+            "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Torpedo\\Torpedo.csproj": {
+              "projectPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Torpedo\\Torpedo.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net5.0-windows7.0": {
+        "targetAlias": "net5.0-windows",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          },
+          "Microsoft.WindowsDesktop.App.WPF": {
+            "privateAssets": "none"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

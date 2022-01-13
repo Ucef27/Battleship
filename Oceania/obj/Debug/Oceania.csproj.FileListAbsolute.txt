@@ -1,0 +1,9 @@
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\bin\Debug\Oceania.dll
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\bin\Debug\Oceania.pdb
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\bin\Debug\Torpedo.dll
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\bin\Debug\Torpedo.pdb
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.csproj.AssemblyReference.cache
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.csproj.CoreCompileInputs.cache
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.csproj.CopyComplete
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.dll
+C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.pdb
