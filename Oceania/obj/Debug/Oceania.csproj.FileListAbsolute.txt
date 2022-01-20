@@ -7,3 +7,12 @@ C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.cspro
 C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.csproj.CopyComplete
 C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.dll
 C:\Users\seifely22\Desktop\Battleship\Battleship\Oceania\obj\Debug\Oceania.pdb
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\bin\Debug\Oceania.dll
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\bin\Debug\Oceania.pdb
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\bin\Debug\Torpedo.dll
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\bin\Debug\Torpedo.pdb
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\obj\Debug\Oceania.csproj.AssemblyReference.cache
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\obj\Debug\Oceania.csproj.CoreCompileInputs.cache
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\obj\Debug\Oceania.csproj.CopyComplete
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\obj\Debug\Oceania.dll
+C:\Users\phara\Documents\GitHub\Battleship\Oceania\obj\Debug\Oceania.pdb

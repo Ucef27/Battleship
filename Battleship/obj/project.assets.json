@@ -62,38 +62,44 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\seifely22\\.nuget\\packages\\": {}
+    "C:\\Users\\phara\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Battleship\\Battleship.csproj",
+      "projectUniqueName": "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Battleship\\Battleship.csproj",
       "projectName": "Battleship",
-      "projectPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Battleship\\Battleship.csproj",
-      "packagesPath": "C:\\Users\\seifely22\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Battleship\\obj\\",
+      "projectPath": "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Battleship\\Battleship.csproj",
+      "packagesPath": "C:\\Users\\phara\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Battleship\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\seifely22\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\phara\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net5.0-windows7.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {}
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {}
       },
       "frameworks": {
         "net5.0-windows7.0": {
           "targetAlias": "net5.0-windows",
           "projectReferences": {
-            "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Eurasia\\Eurasia.csproj": {
-              "projectPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Eurasia\\Eurasia.csproj"
+            "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Eurasia\\Eurasia.csproj": {
+              "projectPath": "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Eurasia\\Eurasia.csproj"
             },
-            "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Oceania\\Oceania.csproj": {
-              "projectPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Oceania\\Oceania.csproj"
+            "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Oceania\\Oceania.csproj": {
+              "projectPath": "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Oceania\\Oceania.csproj"
             },
-            "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Torpedo\\Torpedo.csproj": {
-              "projectPath": "C:\\Users\\seifely22\\Desktop\\Battleship\\Battleship\\Torpedo\\Torpedo.csproj"
+            "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Torpedo\\Torpedo.csproj": {
+              "projectPath": "C:\\Users\\phara\\Documents\\GitHub\\Battleship\\Torpedo\\Torpedo.csproj"
             }
           }
         }
@@ -125,7 +131,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
       }
     }
   }

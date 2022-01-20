@@ -26,9 +26,12 @@ namespace Battleship
         private PlayerOceania oceania = new PlayerOceania();
         private PlayerEurasia eurasia = new PlayerEurasia();
         private TorpedoShot torpedoShot;
+        private Label mylab = new Label();
+
         public MainWindow()
         {
             InitializeComponent();
+            mylab.Content = "A";
         }
     }
 }

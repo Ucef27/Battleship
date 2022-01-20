@@ -7,3 +7,12 @@ C:\Users\seifely22\Desktop\Battleship\Battleship\Eurasia\obj\Debug\Eurasia.cspro
 C:\Users\seifely22\Desktop\Battleship\Battleship\Eurasia\obj\Debug\Eurasia.csproj.CopyComplete
 C:\Users\seifely22\Desktop\Battleship\Battleship\Eurasia\obj\Debug\Eurasia.dll
 C:\Users\seifely22\Desktop\Battleship\Battleship\Eurasia\obj\Debug\Eurasia.pdb
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\bin\Debug\Eurasia.dll
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\bin\Debug\Eurasia.pdb
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\bin\Debug\Torpedo.dll
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\bin\Debug\Torpedo.pdb
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\obj\Debug\Eurasia.csproj.AssemblyReference.cache
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\obj\Debug\Eurasia.csproj.CoreCompileInputs.cache
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\obj\Debug\Eurasia.csproj.CopyComplete
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\obj\Debug\Eurasia.dll
+C:\Users\phara\Documents\GitHub\Battleship\Eurasia\obj\Debug\Eurasia.pdb

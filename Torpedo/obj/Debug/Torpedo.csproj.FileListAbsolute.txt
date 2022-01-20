@@ -4,3 +4,9 @@ C:\Users\seifely22\Desktop\Battleship\Battleship\Torpedo\obj\Debug\Torpedo.cspro
 C:\Users\seifely22\Desktop\Battleship\Battleship\Torpedo\obj\Debug\Torpedo.csproj.CoreCompileInputs.cache
 C:\Users\seifely22\Desktop\Battleship\Battleship\Torpedo\obj\Debug\Torpedo.dll
 C:\Users\seifely22\Desktop\Battleship\Battleship\Torpedo\obj\Debug\Torpedo.pdb
+C:\Users\phara\Documents\GitHub\Battleship\Torpedo\bin\Debug\Torpedo.dll
+C:\Users\phara\Documents\GitHub\Battleship\Torpedo\bin\Debug\Torpedo.pdb
+C:\Users\phara\Documents\GitHub\Battleship\Torpedo\obj\Debug\Torpedo.csproj.AssemblyReference.cache
+C:\Users\phara\Documents\GitHub\Battleship\Torpedo\obj\Debug\Torpedo.csproj.CoreCompileInputs.cache
+C:\Users\phara\Documents\GitHub\Battleship\Torpedo\obj\Debug\Torpedo.dll
+C:\Users\phara\Documents\GitHub\Battleship\Torpedo\obj\Debug\Torpedo.pdb
