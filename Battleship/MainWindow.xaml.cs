@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Torpedo;
 
 namespace Battleship
@@ -26,6 +27,10 @@ namespace Battleship
         private PlayerOceania oceania = new PlayerOceania();
         private PlayerEurasia eurasia = new PlayerEurasia();
         private TorpedoShot torpedoShot;
+        private DispatcherTimer dispatcherTimer;
+
+        private bool oceania_turn = true;
+
 
 
         private void place(int row, int column, bool hit, bool Oceana)
@@ -75,39 +80,6 @@ namespace Battleship
             }
         }
 
-        private void placeChars()
-        {
-            Grid g1 = this.Oceania;
-            Grid g2 = this.Eurasia;
-
-            for (int i = 0; i < 10; i++)
-            {
-                Label mylab = new Label();
-                Label mylab2 = new Label();
-
-                mylab.Content = Convert.ToChar(65 + i);
-                mylab2.Content = Convert.ToChar(65 + i);
-
-                mylab.HorizontalAlignment = HorizontalAlignment.Center;
-                mylab.VerticalAlignment = VerticalAlignment.Center;
-                mylab.HorizontalContentAlignment = HorizontalAlignment.Center;
-                mylab.VerticalContentAlignment = VerticalAlignment.Center;
-
-                mylab2.HorizontalAlignment = HorizontalAlignment.Center;
-                mylab2.VerticalAlignment = VerticalAlignment.Center;
-                mylab2.HorizontalContentAlignment = HorizontalAlignment.Center;
-                mylab2.VerticalContentAlignment = VerticalAlignment.Center;
-
-                Grid.SetRow(mylab, i + 1);
-                Grid.SetColumn(mylab, 0);
-                Grid.SetRow(mylab2, i + 1);
-                Grid.SetColumn(mylab2, 0);
-
-                g1.Children.Add(mylab);
-                g2.Children.Add(mylab2);
-
-            }
-        }
 
         public void makeBorders()
         {
@@ -186,9 +158,32 @@ namespace Battleship
 
             }
 
-            place(2, 2, true, true);
 
+
+
+            place(2, 2, true, true);
+            
             place(2, 5, false, false);
+
+            if (oceania_turn)
+            {
+                TorpedoShot currentShot = oceania.NextMove();
+
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), true, true);
+                oceania_turn = false;
+
+            }
+
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(startGame);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 2);
+            dispatcherTimer.Start();
+
+
+            //startGame();
+
+
+
         }
     }
 }

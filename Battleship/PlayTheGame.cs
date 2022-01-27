@@ -25,5 +25,28 @@ namespace Battleship
     /// </summary>
     public partial class MainWindow : Window
     {
+        private void startGame(Object sender, EventArgs e)
+        {
+
+
+            if (oceania_turn)
+            {
+                TorpedoShot currentShot = oceania.NextMove();
+
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), true, true);
+                oceania_turn = false;
+
+            }
+
+            else
+            {
+                TorpedoShot currentShot = oceania.NextMove();
+
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), true, false);
+                oceania_turn = true;
+            }
+
+            
+        }
     }
 }

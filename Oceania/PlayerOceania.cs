@@ -15,7 +15,7 @@ namespace Oceania
         string[] cruiser;
         string[] submarine;
         string[] destroyer;
-        private List<string> shotsAlreadyTaken;
+        private List<string> shotsAlreadyTaken = new List<string>();
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
