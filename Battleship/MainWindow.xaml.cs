@@ -29,6 +29,11 @@ namespace Battleship
         private TorpedoShot torpedoShot;
         private DispatcherTimer dispatcherTimer;
 
+        private Dictionary<Ships, HashSet<String>> oceania_ships;
+        private Dictionary<Ships, HashSet<String>> eurasia_ships;
+        private Dictionary<Ships, HashSet<String>> oceania_ships_hit;
+        private Dictionary<Ships, HashSet<String>> eurasia_ships_hit;
+
         private bool oceania_turn = true;
 
 
