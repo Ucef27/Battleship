@@ -40,11 +40,23 @@ namespace Battleship
             eurasia_ships[Ships.Cruiser] = new HashSet<String>(oceania.GetCruiser());
             eurasia_ships[Ships.Submarine] = new HashSet<String>(oceania.GetSubmarine());
             eurasia_ships[Ships.Destroyer] = new HashSet<String>(oceania.GetDestroyer());
+
+            oceania_ships_hit[Ships.AircraftCarrier] = new HashSet<String>();
+            oceania_ships_hit[Ships.Battleship] = new HashSet<String>();
+            oceania_ships_hit[Ships.Cruiser] = new HashSet<String>();
+            oceania_ships_hit[Ships.Submarine] = new HashSet<String>();
+            oceania_ships_hit[Ships.Destroyer] = new HashSet<String>();
+
+            eurasia_ships_hit[Ships.AircraftCarrier] = new HashSet<String>();
+            eurasia_ships_hit[Ships.Battleship] = new HashSet<String>();
+            eurasia_ships_hit[Ships.Cruiser] = new HashSet<String>();
+            eurasia_ships_hit[Ships.Submarine] = new HashSet<String>();
+            eurasia_ships_hit[Ships.Destroyer] = new HashSet<String>();
         }
         private void startGame(Object sender, EventArgs e)
         {
 
-
+            
 
             if (oceania_turn)
             {
@@ -52,15 +64,20 @@ namespace Battleship
 
                 String shot_location = currentShot.Row + currentShot.Column;
 
+                bool isHit = false;
+
                 for (int i = 0; i < 5; i++)
                 {
                     if (eurasia_ships[(Ships)i].Contains(shot_location))
                     {
-
+                        eurasia_ships_hit[(Ships)i].Add(shot_location);
+                        isHit = true;
+                        break;
                     }
                 }
 
-                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), true, true);
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, true);
+
                 oceania_turn = false;
                 
             }
@@ -69,7 +86,29 @@ namespace Battleship
             {
                 TorpedoShot currentShot = oceania.NextMove();
 
-                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), true, false);
+                String shot_location = currentShot.Row + currentShot.Column;
+
+                bool isHit = false;
+
+                String sunk = "";
+
+                for (int i = 0; i < 5; i++)
+                {
+                    if (oceania_ships[(Ships)i].Contains(shot_location))
+                    {
+                        oceania_ships_hit[(Ships)i].Add(shot_location);
+                        isHit = true;
+                        if (oceania_ships_hit[(Ships)i].Count == oceania_ships[(Ships)i].Count)
+                        {
+                            sunk = convert[(Ships)i];
+
+                        }
+                        break;
+                    }
+                }
+
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, false);
+                oceania.ResultOfShot(new TorpedoResult(currentShot, isHit, ""));
                 oceania_turn = true;
             }
 

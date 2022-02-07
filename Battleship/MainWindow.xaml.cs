@@ -29,10 +29,13 @@ namespace Battleship
         private TorpedoShot torpedoShot;
         private DispatcherTimer dispatcherTimer;
 
-        private Dictionary<Ships, HashSet<String>> oceania_ships;
-        private Dictionary<Ships, HashSet<String>> eurasia_ships;
-        private Dictionary<Ships, HashSet<String>> oceania_ships_hit;
-        private Dictionary<Ships, HashSet<String>> eurasia_ships_hit;
+        private Dictionary<Ships, HashSet<String>> oceania_ships = new Dictionary<Ships, HashSet<string>>();
+        private Dictionary<Ships, HashSet<String>> eurasia_ships = new Dictionary<Ships, HashSet<string>>();
+        private Dictionary<Ships, HashSet<String>> oceania_ships_hit = new Dictionary<Ships, HashSet<string>>();
+        private Dictionary<Ships, HashSet<String>> eurasia_ships_hit = new Dictionary<Ships, HashSet<string>>();
+
+        private Dictionary<Ships, String> convert = new Dictionary<Ships, string>();
+
 
         private bool oceania_turn = true;
 
@@ -85,6 +88,31 @@ namespace Battleship
             }
         }
 
+        private void place_ships(int row, int column, bool Oceana)
+        {
+            Grid g;
+            if (Oceana)
+            {
+                g = this.Oceania;
+            }
+
+            else
+            {
+                g = this.Eurasia;
+            }
+            Rectangle rect = new Rectangle();
+            rect.Width = 100;
+            rect.Height = 100;
+            SolidColorBrush blackBrush = new SolidColorBrush();
+            blackBrush.Color = Colors.Black;
+            rect.Fill = blackBrush;
+
+
+            Grid.SetRow(rect, row);
+            Grid.SetColumn(rect, column);
+
+            g.Children.Add(rect);
+        }
 
         public void makeBorders()
         {
@@ -163,21 +191,18 @@ namespace Battleship
 
             }
 
+            convert[Ships.AircraftCarrier] = "Aircraft Carrier";
+            convert[Ships.Battleship] = "Battleship";
+            convert[Ships.Cruiser] = "Cruiser";
+            convert[Ships.Submarine] = "Submarine";
+            convert[Ships.Destroyer] = "Destroyer";
 
 
 
-            place(2, 2, true, true);
-            
-            place(2, 5, false, false);
+            setup();
 
-            if (oceania_turn)
-            {
-                TorpedoShot currentShot = oceania.NextMove();
+            drawShips();
 
-                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), true, true);
-                oceania_turn = false;
-
-            }
 
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(startGame);
@@ -185,10 +210,37 @@ namespace Battleship
             dispatcherTimer.Start();
 
 
+
             //startGame();
 
 
 
+        }
+
+        private void drawShips()
+        {
+            foreach (Ships shi in oceania_ships.Keys)
+            {
+                var arr =  oceania_ships[shi];
+                foreach (String s in arr)
+                {
+                    int l = char.Parse(s.Substring(0, 1));
+                    l -= 64;
+                    int n = Int32.Parse(s.Substring(1));
+                    place_ships(l, n, true);
+                }
+            }
+            foreach (Ships shi in eurasia_ships.Keys)
+            {
+                var arr = eurasia_ships[shi];
+                foreach (String s in arr)
+                {
+                    int l = char.Parse(s.Substring(0, 1));
+                    l -= 64;
+                    int n = Int32.Parse(s.Substring(1));
+                    place_ships(l, n, false);
+                }
+            }
         }
     }
 }
