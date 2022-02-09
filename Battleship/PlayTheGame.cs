@@ -66,25 +66,33 @@ namespace Battleship
 
                 bool isHit = false;
 
+                String sunk = "";
+
                 for (int i = 0; i < 5; i++)
                 {
                     if (eurasia_ships[(Ships)i].Contains(shot_location))
                     {
                         eurasia_ships_hit[(Ships)i].Add(shot_location);
                         isHit = true;
+                        if (oceania_ships_hit[(Ships)i].Count == oceania_ships[(Ships)i].Count)
+                        {
+                            oceania_ships_hit[(Ships)i].Add("LOLI");
+                            sunk = convert[(Ships)i];
+
+                        }
                         break;
                     }
                 }
 
                 place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, true);
-
+                oceania.ResultOfShot(new TorpedoResult(currentShot, isHit, sunk));
                 oceania_turn = false;
                 
             }
 
             else
             {
-                TorpedoShot currentShot = oceania.NextMove();
+                TorpedoShot currentShot = eurasia.NextMove();
 
                 String shot_location = currentShot.Row + currentShot.Column;
 
@@ -100,6 +108,7 @@ namespace Battleship
                         isHit = true;
                         if (oceania_ships_hit[(Ships)i].Count == oceania_ships[(Ships)i].Count)
                         {
+                            oceania_ships_hit[(Ships)i].Add("MILF");
                             sunk = convert[(Ships)i];
 
                         }
@@ -108,7 +117,7 @@ namespace Battleship
                 }
 
                 place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, false);
-                oceania.ResultOfShot(new TorpedoResult(currentShot, isHit, ""));
+                eurasia.ResultOfShot(new TorpedoResult(currentShot, isHit, sunk));
                 oceania_turn = true;
             }
 
