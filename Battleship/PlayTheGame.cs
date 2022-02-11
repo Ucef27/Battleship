@@ -116,7 +116,7 @@ namespace Battleship
                     }
                 }
 
-                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, false);
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column) + 1, isHit, false);
                 eurasia.ResultOfShot(new TorpedoResult(currentShot, isHit, sunk));
                 oceania_turn = true;
             }

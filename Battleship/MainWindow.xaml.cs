@@ -114,6 +114,32 @@ namespace Battleship
             g.Children.Add(rect);
         }
 
+        public void place_text(int row, int column, bool Oceana, String stuff)
+        {
+            Grid g;
+            if (Oceana)
+            {
+                g = this.Oceania;
+            }
+
+            else
+            {
+                g = this.Eurasia;
+            }
+            Label rect = new Label();
+            rect.Width = 100;
+            rect.Height = 100;
+            rect.Content = stuff;
+            SolidColorBrush blackBrush = new SolidColorBrush();
+            blackBrush.Color = Colors.Black;
+
+
+            Grid.SetRow(rect, row);
+            Grid.SetColumn(rect, column);
+
+            g.Children.Add(rect);
+        }
+
         public void makeBorders()
         {
             Grid g = this.Oceania;
