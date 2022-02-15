@@ -38,15 +38,15 @@ namespace Eurasia
 
             Tuple<int, int> location = find_max();
 
-            Debug.WriteLine(hits_per_shot[4, 4]);
-            Debug.WriteLine(hits_per_shot[location.Item1, location.Item2]);
-            Debug.WriteLine(location.Item1 + " " + location.Item2);
+            //Debug.WriteLine(hits_per_shot[4, 4]);
+            //Debug.WriteLine(hits_per_shot[location.Item1, location.Item2]);
+            //Debug.WriteLine(location.Item1 + " " + location.Item2);
             //Random random = new Random();
             int row = location.Item1;
             int column = location.Item2;
-            shot = new TorpedoShot(((char)('A' + row)).ToString(), column.ToString());
+            shot = new TorpedoShot(((char)('A' + row)).ToString(), (column + 1).ToString());
 
-            board[row, column] = 1;
+            //board[row, column] = 1;
             return shot;
         }
 
@@ -54,7 +54,8 @@ namespace Eurasia
          * in response to the result of your latest shot. */
         public void ResultOfShot(TorpedoResult result)
         {
-            //board[char.Parse(result.Shot.Row) - 64, Int32.Parse(result.Shot.Column)] = 1;
+            //Debug.WriteLine(char.Parse(result.Shot.Row) - 64);
+            board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 1;
             
         }
 

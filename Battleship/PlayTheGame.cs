@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -63,6 +64,7 @@ namespace Battleship
                 TorpedoShot currentShot = oceania.NextMove();
 
                 String shot_location = currentShot.Row + currentShot.Column;
+                
 
                 bool isHit = false;
 
@@ -95,6 +97,7 @@ namespace Battleship
                 TorpedoShot currentShot = eurasia.NextMove();
 
                 String shot_location = currentShot.Row + currentShot.Column;
+                //Debug.WriteLine(shot_location);
 
                 bool isHit = false;
 
@@ -116,7 +119,7 @@ namespace Battleship
                     }
                 }
 
-                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column) + 1, isHit, false);
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, false);
                 eurasia.ResultOfShot(new TorpedoResult(currentShot, isHit, sunk));
                 oceania_turn = true;
             }
