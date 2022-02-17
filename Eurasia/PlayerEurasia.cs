@@ -13,6 +13,8 @@ namespace Eurasia
         private int[,] board = new int[10, 10];
         private int[,] hits_per_shot = new int[10, 10];
 
+        private Dictionary<String, int> ship_size = new Dictionary<string, int>() { { "Aircraft Carrier", 5 }, { "Battleship", 4 }, { "Submarine", 3 }, { "Cruiser", 3 }, { "Destroyer", 2 } };
+
         private int[] alive_ships = new int[] { 2, 3, 3, 4, 5 };
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
@@ -56,6 +58,12 @@ namespace Eurasia
         {
             //Debug.WriteLine(char.Parse(result.Shot.Row) - 64);
             board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 1;
+            
+            if (!result.Sunk.Equals(""))
+            {
+                alive_ships = alive_ships.Where(e => e != ship_size[result.Sunk]).ToArray();
+                //Debug.WriteLine(String.Join(",", alive_ships));
+            }
             
         }
 

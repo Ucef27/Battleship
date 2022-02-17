@@ -17,6 +17,9 @@ namespace Oceania
         string[] destroyer;
         private List<string> shotsAlreadyTaken = new List<string>();
 
+
+        
+
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
          * This is where most of your "artificial intelligence" will come into play.  As an example, I have
@@ -80,6 +83,7 @@ namespace Oceania
          *      Destroyer:  {"K1", "L1"}                // valid
          *      Destroyer:  {"L1", "K1"}                // invalid
          */
+
 
         /* Return the location of your Aircraft Carrier */
         public string[] GetAircraftCarrier()
