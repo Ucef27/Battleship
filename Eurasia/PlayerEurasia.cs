@@ -17,6 +17,14 @@ namespace Eurasia
 
         private int[] alive_ships = new int[] { 2, 3, 3, 4, 5 };
 
+        private List<Tuple<int, int>> shotHistory = new List<Tuple<int, int>>();
+
+        private bool huntMode = false;
+
+        private int turnsSinceHit = 0;
+
+        private Tuple<int, int>
+
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
          * This is where most of your "artificial intelligence" will come into play.  As an example, I have
@@ -27,6 +35,9 @@ namespace Eurasia
         {
             TorpedoShot shot = new TorpedoShot();
             hits_per_shot = new int[10, 10];
+            
+
+            Tuple<int, int> location;
 
             foreach (int i in alive_ships)
             {
@@ -38,7 +49,36 @@ namespace Eurasia
                 find_hits_per_spot(i);
             }
 
-            Tuple<int, int> location = find_max();
+            if (huntMode)
+            {
+                Tuple<int, int> locationToCheck = shotHistory[shotHistory.Count - 1 - turnsSinceHit];
+                Tuple<int, int>[] locationCheck = new Tuple<int, int>[4];
+
+                locationCheck[0] = Tuple.Create(locationToCheck.Item1 + 1, locationToCheck.Item2);
+                locationCheck[1] = Tuple.Create(locationToCheck.Item1 - 1, locationToCheck.Item2);
+                locationCheck[2] = Tuple.Create(locationToCheck.Item1, locationToCheck.Item2 + 1);
+                locationCheck[3] = Tuple.Create(locationToCheck.Item1, locationToCheck.Item2 - 1);
+
+                int bestShot = 0;
+                int bestProb = 0;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    if (hits_per_shot[locationCheck[i].Item1, locationCheck[i].Item2] > bestProb)
+                    {
+                        bestProb = hits_per_shot[locationCheck[i].Item1, locationCheck[i].Item2];
+                        bestShot = i;
+                    }
+                }
+
+                location = locationCheck[bestShot];
+
+
+            }
+
+            else {
+                location = find_max();
+            }
 
             //Debug.WriteLine(hits_per_shot[4, 4]);
             //Debug.WriteLine(hits_per_shot[location.Item1, location.Item2]);
@@ -46,6 +86,7 @@ namespace Eurasia
             //Random random = new Random();
             int row = location.Item1;
             int column = location.Item2;
+            shotHistory.Add(new Tuple<int, int>(row, column));
             shot = new TorpedoShot(((char)('A' + row)).ToString(), (column + 1).ToString());
 
             //board[row, column] = 1;
@@ -58,10 +99,26 @@ namespace Eurasia
         {
             //Debug.WriteLine(char.Parse(result.Shot.Row) - 64);
             board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 1;
+
+            if (result.WasHit)
+            {
+                huntMode = true;
+                turnsSinceHit = 0;
+            }
+
+            else
+            {
+                turnsSinceHit++;
+            }
             
             if (!result.Sunk.Equals(""))
             {
-                alive_ships = alive_ships.Where(e => e != ship_size[result.Sunk]).ToArray();
+                var foos = new List<int>(alive_ships);
+                foos.Remove(ship_size[result.Sunk]);
+                alive_ships = foos.ToArray();
+                huntMode = false;
+                turnsSinceHit = 0;
+                //alive_ships = alive_ships.Where(e => e != ship_size[result.Sunk]).ToArray();
                 //Debug.WriteLine(String.Join(",", alive_ships));
             }
             
