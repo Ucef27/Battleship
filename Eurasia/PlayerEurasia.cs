@@ -23,7 +23,7 @@ namespace Eurasia
 
         private int turnsSinceHit = 0;
 
-        private Tuple<int, int>
+        private Tuple<int, int> initialHit;
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
@@ -51,7 +51,7 @@ namespace Eurasia
 
             if (huntMode)
             {
-                Tuple<int, int> locationToCheck = shotHistory[shotHistory.Count - 1 - turnsSinceHit];
+                Tuple<int, int> locationToCheck = shotHistory[shotHistory.Count - 1 - turnsSinceHit]; //usually the last shot but returns to initial hit after exhausted direction
                 Tuple<int, int>[] locationCheck = new Tuple<int, int>[4];
 
                 locationCheck[0] = Tuple.Create(locationToCheck.Item1 + 1, locationToCheck.Item2);
