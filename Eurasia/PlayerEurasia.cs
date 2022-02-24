@@ -21,9 +21,11 @@ namespace Eurasia
 
         private bool huntMode = false;
 
-        private int turnsSinceHit = 0;
+        private int turnsSinceMiss = 0;
 
         private Tuple<int, int> initialHit;
+
+        private Tuple<int, int> direction = Tuple.Create(0, 0);
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
@@ -51,7 +53,7 @@ namespace Eurasia
 
             if (huntMode)
             {
-                Tuple<int, int> locationToCheck = shotHistory[shotHistory.Count - 1 - turnsSinceHit]; //usually the last shot but returns to initial hit after exhausted direction
+                Tuple<int, int> locationToCheck = Tuple.Create(initialHit.Item1 + direction.Item1, initialHit.Item2 + direction.Item2); //usually the last shot but returns to initial hit after exhausted direction
                 Tuple<int, int>[] locationCheck = new Tuple<int, int>[4];
 
                 locationCheck[0] = Tuple.Create(locationToCheck.Item1 + 1, locationToCheck.Item2);
@@ -100,15 +102,25 @@ namespace Eurasia
             //Debug.WriteLine(char.Parse(result.Shot.Row) - 64);
             board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 1;
 
+            if (result.WasHit && huntMode == false)
+            {
+                initialHit = Tuple.Create(char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1);
+            }
+
+            if (result.WasHit && huntMode == true)
+            {
+                direction = Tuple.Create((char.Parse(result.Shot.Row) - 64 - 1) - initialHit.Item1, (Int32.Parse(result.Shot.Column) - 1) - initialHit.Item2);
+            }
+
             if (result.WasHit)
             {
                 huntMode = true;
-                turnsSinceHit = 0;
+                turnsSinceMiss++;
             }
 
             else
             {
-                turnsSinceHit++;
+                turnsSinceMiss = 0;
             }
             
             if (!result.Sunk.Equals(""))
@@ -117,7 +129,7 @@ namespace Eurasia
                 foos.Remove(ship_size[result.Sunk]);
                 alive_ships = foos.ToArray();
                 huntMode = false;
-                turnsSinceHit = 0;
+                turnsSinceMiss = 0;
                 //alive_ships = alive_ships.Where(e => e != ship_size[result.Sunk]).ToArray();
                 //Debug.WriteLine(String.Join(",", alive_ships));
             }
@@ -192,7 +204,7 @@ namespace Eurasia
         {
             if (row_check)
             {
-                for (int i = start.Item2; i < end.Item2 + 1; i++)
+                for (int i = start.Item2; i < end.Item2; i++)
                 {
                     if (board[start.Item1, i] == 1) {
                         return false;
@@ -202,7 +214,7 @@ namespace Eurasia
 
             else
             {
-                for (int i = start.Item1; i < end.Item1 + 1; i++)
+                for (int i = start.Item1; i < end.Item1; i++)
                 {
                     if (board[i, start.Item2] == 1)
                     {
@@ -217,13 +229,13 @@ namespace Eurasia
 
         private void find_hits_per_spot(int length)
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 9 + 1; i++)
             {
-                for (int j = 0; j < 10 - length; j++)
+                for (int j = 0; j < (9 + 1) - length + 1; j++)
                 {
                     if (can_place(Tuple.Create(i, j), Tuple.Create(i, j + length), true))
                     {
-                        for (int l = j; l < j + length + 1; l++)
+                        for (int l = j; l < j + length; l++)
                         {
                             hits_per_shot[i, l] += 1;
                         }
@@ -231,13 +243,13 @@ namespace Eurasia
                 }
             }
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 9 + 1; i++)
             {
-                for (int j = 0; j < 10 - length; j++)
+                for (int j = 0; j < (9 + 1) - length + 1; j++)
                 {
                     if (can_place(Tuple.Create(j, i), Tuple.Create(j + length, i), false))
                     {
-                        for (int l = j; l < j + length + 1; l++)
+                        for (int l = j; l < j + length; l++)
                         {
                             hits_per_shot[l, i] += 1;
                         }
