@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Torpedo;
 using System.Diagnostics;
+using System.Windows;
 
 namespace Eurasia
 {
@@ -21,11 +22,16 @@ namespace Eurasia
 
         private bool huntMode = false;
 
-        private int turnsSinceMiss = 0;
+        private Vector initial_hit = new Vector();
 
-        private Tuple<int, int> initialHit;
+        private Vector up = new Vector(0, 1);
+        private Vector down = new Vector(0, -1);
+        private Vector left = new Vector(-1, 0);
+        private Vector right = new Vector(1, 0);
 
-        private Tuple<int, int> direction = Tuple.Create(0, 0);
+        private Vector current_direction = new Vector();
+
+        private Vector last_shot = new Vector();
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
@@ -37,6 +43,9 @@ namespace Eurasia
         {
             TorpedoShot shot = new TorpedoShot();
             hits_per_shot = new int[10, 10];
+
+            int row;
+            int column;
             
 
             Tuple<int, int> location;
@@ -51,43 +60,24 @@ namespace Eurasia
                 find_hits_per_spot(i);
             }
 
-            if (huntMode)
+            
+            if (huntMode) 
             {
-                Tuple<int, int> locationToCheck = Tuple.Create(initialHit.Item1 + direction.Item1, initialHit.Item2 + direction.Item2); //usually the last shot but returns to initial hit after exhausted direction
-                Tuple<int, int>[] locationCheck = new Tuple<int, int>[4];
-
-                locationCheck[0] = Tuple.Create(locationToCheck.Item1 + 1, locationToCheck.Item2);
-                locationCheck[1] = Tuple.Create(locationToCheck.Item1 - 1, locationToCheck.Item2);
-                locationCheck[2] = Tuple.Create(locationToCheck.Item1, locationToCheck.Item2 + 1);
-                locationCheck[3] = Tuple.Create(locationToCheck.Item1, locationToCheck.Item2 - 1);
-
-                int bestShot = 0;
-                int bestProb = 0;
-
-                for (int i = 0; i < 4; i++)
-                {
-                    if (hits_per_shot[locationCheck[i].Item1, locationCheck[i].Item2] > bestProb)
-                    {
-                        bestProb = hits_per_shot[locationCheck[i].Item1, locationCheck[i].Item2];
-                        bestShot = i;
-                    }
-                }
-
-                location = locationCheck[bestShot];
-
-
+               Vector s = last_shot + current_direction;
+               row = (int) s.X;
+               column = (int) s.Y;
             }
 
-            else {
+            else
+            {
                 location = find_max();
+                row = location.Item1;
+                column = location.Item2;
             }
 
-            //Debug.WriteLine(hits_per_shot[4, 4]);
-            //Debug.WriteLine(hits_per_shot[location.Item1, location.Item2]);
-            //Debug.WriteLine(location.Item1 + " " + location.Item2);
-            //Random random = new Random();
-            int row = location.Item1;
-            int column = location.Item2;
+
+            
+
             shotHistory.Add(new Tuple<int, int>(row, column));
             shot = new TorpedoShot(((char)('A' + row)).ToString(), (column + 1).ToString());
 
@@ -100,28 +90,17 @@ namespace Eurasia
         public void ResultOfShot(TorpedoResult result)
         {
             //Debug.WriteLine(char.Parse(result.Shot.Row) - 64);
-            board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 1;
-
-            if (result.WasHit && huntMode == false)
-            {
-                initialHit = Tuple.Create(char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1);
-            }
-
-            if (result.WasHit && huntMode == true)
-            {
-                direction = Tuple.Create((char.Parse(result.Shot.Row) - 64 - 1) - initialHit.Item1, (Int32.Parse(result.Shot.Column) - 1) - initialHit.Item2);
-            }
 
             if (result.WasHit)
             {
-                huntMode = true;
-                turnsSinceMiss++;
+                board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 2;
             }
 
             else
             {
-                turnsSinceMiss = 0;
+                board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 1;
             }
+            
             
             if (!result.Sunk.Equals(""))
             {
@@ -129,7 +108,6 @@ namespace Eurasia
                 foos.Remove(ship_size[result.Sunk]);
                 alive_ships = foos.ToArray();
                 huntMode = false;
-                turnsSinceMiss = 0;
                 //alive_ships = alive_ships.Where(e => e != ship_size[result.Sunk]).ToArray();
                 //Debug.WriteLine(String.Join(",", alive_ships));
             }
@@ -206,7 +184,7 @@ namespace Eurasia
             {
                 for (int i = start.Item2; i < end.Item2; i++)
                 {
-                    if (board[start.Item1, i] == 1) {
+                    if (board[start.Item1, i] == 1 || board[start.Item1, i] == 2) {
                         return false;
                     }
                 }
@@ -216,7 +194,7 @@ namespace Eurasia
             {
                 for (int i = start.Item1; i < end.Item1; i++)
                 {
-                    if (board[i, start.Item2] == 1)
+                    if (board[i, start.Item2] == 1 || board[i, start.Item2] == 2)
                     {
                         return false;
                     }
@@ -277,6 +255,13 @@ namespace Eurasia
             }
 
             return Tuple.Create(max_row, max_column);
+        }
+
+        private Vector[] all_sides(Vector input)
+        {
+            Vector[] output = { input + left, input + up, input + right, input + down};
+
+            return output;
         }
     }
 }
