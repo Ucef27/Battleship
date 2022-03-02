@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Torpedo;
 using System.Diagnostics;
 using System.Windows;
+using System.Collections;
 
 namespace Eurasia
 {
@@ -22,16 +23,12 @@ namespace Eurasia
 
         private bool huntMode = false;
 
-        private Vector initial_hit = new Vector();
+        private bool advancedHuntMode = false;
+        private bool isVerticle;
+        Queue<Tuple<int, int>> shotsToTake = new Queue<Tuple<int, int>>();
+        ArrayList hits = new ArrayList();
+        private Tuple<int, int> originShot;
 
-        private Vector up = new Vector(0, 1);
-        private Vector down = new Vector(0, -1);
-        private Vector left = new Vector(-1, 0);
-        private Vector right = new Vector(1, 0);
-
-        private Vector current_direction = new Vector();
-
-        private Vector last_shot = new Vector();
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
@@ -61,11 +58,11 @@ namespace Eurasia
             }
 
             
-            if (huntMode) 
+            if (shotsToTake.Count != 0) 
             {
-               Vector s = last_shot + current_direction;
-               row = (int) s.X;
-               column = (int) s.Y;
+                Tuple<int, int> foo = shotsToTake.Dequeue();
+                row = foo.Item1;
+                column = foo.Item2;
             }
 
             else
@@ -91,27 +88,61 @@ namespace Eurasia
         {
             //Debug.WriteLine(char.Parse(result.Shot.Row) - 64);
 
+            Tuple<int, int> shot_location = new Tuple<int, int>(char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1);
+
+            Debug.WriteLine(shot_location);
+
             if (result.WasHit)
             {
-                board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 2;
+                board[shot_location.Item1, shot_location.Item2] = 2;
             }
 
             else
             {
-                board[char.Parse(result.Shot.Row) - 64 - 1, Int32.Parse(result.Shot.Column) - 1] = 1;
+                board[shot_location.Item1, shot_location.Item2] = 1;
             }
-            
-            
+
             if (!result.Sunk.Equals(""))
             {
+                huntMode = false;
+                advancedHuntMode = false;
                 var foos = new List<int>(alive_ships);
                 foos.Remove(ship_size[result.Sunk]);
                 alive_ships = foos.ToArray();
-                huntMode = false;
-                //alive_ships = alive_ships.Where(e => e != ship_size[result.Sunk]).ToArray();
-                //Debug.WriteLine(String.Join(",", alive_ships));
+                shotsToTake.Clear();
             }
-            
+
+            if (huntMode && result.WasHit)
+            {
+                if (!advancedHuntMode)
+                {
+                    if (shot_location.Item1 == originShot.Item1)
+                    {
+                        isVerticle = false;
+                    }
+
+                    else if (shot_location.Item2 == originShot.Item2)
+                    {
+                        isVerticle = true;
+                    }
+                }
+
+                advancedHuntMode = true;
+            }
+
+            if (advancedHuntMode && result.Sunk.Equals(""))
+            {
+                shotsToTake.Clear();
+                advancedHunt(shot_location, result.WasHit);
+            }
+
+            if (!advancedHuntMode && result.WasHit && result.Sunk.Length == 0 && shotsToTake.Count == 0)
+            {
+                originShot = shot_location;
+                huntMode = true;
+                hunt(shot_location);
+            }
+
         }
 
         /* The Reset() method must contain all the code you need to prepare for a new game, including
@@ -257,11 +288,96 @@ namespace Eurasia
             return Tuple.Create(max_row, max_column);
         }
 
-        private Vector[] all_sides(Vector input)
-        {
-            Vector[] output = { input + left, input + up, input + right, input + down};
 
-            return output;
+        private void hunt(Tuple<int, int> shot)
+        {
+            if (shotsToTake.Count == 0)
+            {
+                int row = shot.Item1;
+                int col = shot.Item2;
+
+                Tuple<int, int> shot1;
+                Tuple<int, int> shot2;
+                Tuple<int, int> shot3;
+                Tuple<int, int> shot4;
+
+                if (col > 0)
+                {
+                    shot1 = new Tuple<int, int>(row, col - 1);
+                    shotsToTake.Enqueue(shot1);
+                }
+
+                if (row < 9)
+                {
+                    shot2 = new Tuple<int, int>(row + 1, col);
+                    shotsToTake.Enqueue(shot2);
+                }
+
+                if (col < 9)
+                {
+                    shot3 = new Tuple<int, int>(row, col + 1);
+                    shotsToTake.Enqueue(shot3);
+                }
+
+                if (row > 0)
+                {
+                    shot4 = new Tuple<int, int>(row - 1, col);
+                    shotsToTake.Enqueue(shot4);
+                }
+            }
+        }
+
+        private void advancedHunt(Tuple<int, int> shot, bool wasHit)
+        {
+            int row = shot.Item1;
+            int col = shot.Item2;
+
+            int orow = originShot.Item1;
+            int ocol = originShot.Item2;
+
+            if (isVerticle)
+            {
+                Tuple<int, int> nextShot = new Tuple<int, int>(row, col);
+                if (row > 0)
+                {
+                    nextShot = new Tuple<int, int>(row - 1, col);
+                }
+
+                if (nextShot.Item1 == orow && nextShot.Item2 == ocol && orow > 0)
+                {
+                    nextShot = new Tuple<int, int>(orow - 1, ocol);
+                }
+
+                if (!wasHit && row < 9 || row == 0 || shotHistory.Contains(nextShot))
+                {
+                    nextShot = new Tuple<int, int>(orow + 1, ocol);
+                    originShot = nextShot;
+                }
+                shotsToTake.Enqueue(nextShot);
+                shotHistory.Add(nextShot);
+            }
+
+            else
+            {
+                Tuple<int, int> nextShot = new Tuple<int, int>(row, col);
+                if (col > 0)
+                {
+                    nextShot = new Tuple<int, int>(row, col - 1);
+                }
+
+                if (nextShot.Item1 == orow && nextShot.Item2 == ocol && ocol > 0)
+                {
+                    nextShot = new Tuple<int, int>(orow, ocol - 1);
+                }
+
+                if (!wasHit && col < 9 || col == 0 || shotHistory.Contains(nextShot))
+                {
+                    nextShot = new Tuple<int, int>(orow, ocol + 1);
+                    originShot = nextShot;
+                }
+                shotsToTake.Enqueue(nextShot);
+                shotHistory.Add(nextShot);
+            }
         }
     }
 }

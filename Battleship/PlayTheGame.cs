@@ -63,6 +63,7 @@ namespace Battleship
             {
                 TorpedoShot currentShot = oceania.NextMove();
 
+
                 String shot_location = currentShot.Row + currentShot.Column;
                 
 
@@ -78,7 +79,7 @@ namespace Battleship
                         isHit = true;
                         if (oceania_ships_hit[(Ships)i].Count == oceania_ships[(Ships)i].Count)
                         {
-                            oceania_ships_hit[(Ships)i].Add("LOLI");
+                            oceania_ships_hit[(Ships)i].Add("MILF");
                             sunk = convert[(Ships)i];
 
                         }
@@ -111,7 +112,7 @@ namespace Battleship
                         isHit = true;
                         if (oceania_ships_hit[(Ships)i].Count == oceania_ships[(Ships)i].Count)
                         {
-                            oceania_ships_hit[(Ships)i].Add("MILF");
+                            oceania_ships_hit[(Ships)i].Add("LOLI");
                             sunk = convert[(Ships)i];
 
                         }

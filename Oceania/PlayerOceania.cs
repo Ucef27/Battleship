@@ -4,21 +4,37 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Collections;
 using Torpedo;
 
 namespace Oceania
 {
     public class PlayerOceania
     {
+        private bool isVertical;
+        private bool huntMode = false;
+        private bool advHuntMode = false;
+        Queue<TorpedoShot> shotsToTake = new Queue<TorpedoShot>();
+        ArrayList hits = new ArrayList();
+        private TorpedoShot origin = new TorpedoShot();
+        Dictionary<string, int> shipsNotSunk = new Dictionary<string, int>()
+        {
+            {"Aircraft Carrier", 5 },
+            {"Battleship", 4 },
+            {"Cruiser", 3 },
+            {"Submarine", 3 },
+            {"Destroyer", 2 }
+        };
+
+        TorpedoShot lastShot;
+
         string[] aircraftCarrier;
         string[] battleship;
         string[] cruiser;
         string[] submarine;
         string[] destroyer;
-        private List<string> shotsAlreadyTaken = new List<string>();
 
-
-        
+        private List<string> shotsAlreadyTaken;
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
@@ -34,24 +50,89 @@ namespace Oceania
 
             while (stringShot == "")
             {
-                Random random = new Random();
-                int row = random.Next(10);
-                int column = random.Next(10) + 1;
-                shot = new TorpedoShot(((char)('A' + row)).ToString(), column.ToString());
-                stringShot = shot.Row + shot.Column;
-                if (shotsAlreadyTaken.Contains(stringShot))
-                    stringShot = "";
+
+                if (shotsToTake.Count != 0)
+                {
+                    shot = shotsToTake.Dequeue();
+                    stringShot = shot.Row + shot.Column;
+                }
                 else
-                    shotsAlreadyTaken.Add(stringShot);
+                {
+                    Random random = new Random();
+                    int row = random.Next(10);
+                    int column = random.Next(10) + 1;
+                    if (Math.Pow(-1, row + column) > 0)
+                    {
+                        shot = new TorpedoShot(((char)('A' + row)).ToString(), column.ToString());
+                        stringShot = shot.Row + shot.Column;
+                        if (shotsAlreadyTaken.Contains(stringShot))
+                        {
+                            stringShot = "";
+                        }
+                        else
+                        {
+                            shotsAlreadyTaken.Add(stringShot);
+                        }
+
+                    }
+                    else
+                    {
+                        stringShot = "";
+                    }
+                }
+
+
+
             }
 
+            
             return shot;
         }
 
         /* The ResultOfShot() method must contain all the code you need to adjust your internal data
-         * in response to the result of your latest shot. */
+         * in response to the result of your latest shot.
+         *
+         ResultOfShot does will go left until it misses then will not go back to the right for horizontal ships, origin is not updating
+        */
         public void ResultOfShot(TorpedoResult result)
         {
+            if (result.Sunk.Length > 0)
+            {
+                huntMode = false;
+                advHuntMode = false;
+                shipsNotSunk.Remove(result.Sunk);
+                shotsToTake.Clear();
+            }
+            if (huntMode && result.WasHit)
+            {
+                if (!advHuntMode)
+                {
+                    if (result.Shot.Row == origin.Row)
+                    {
+                        isVertical = false;
+                    }
+                    else if (result.Shot.Column == origin.Column)
+                    {
+                        isVertical = true;
+                    }
+                }
+                hits.Add("" + result.Shot.Row + result.Shot.Column);
+                advHuntMode = true;
+            }
+            if (advHuntMode && result.Sunk.Length == 0)
+            {
+                shotsToTake.Clear();
+                advHunt(result.Shot, result.WasHit);
+            }
+            if (!advHuntMode && result.WasHit && result.Sunk.Length == 0 && shotsToTake.Count == 0)
+            {
+                lastShot = result.Shot;
+                origin = result.Shot;
+                hits.Add("" + result.Shot.Row + result.Shot.Column);
+                huntMode = true;
+                hunt(result.Shot);
+            }
+
 
         }
 
@@ -73,7 +154,7 @@ namespace Oceania
          * information must be in order, from lowest to highest.  Finally, the string array
          * representing the position must be exactly the predefined size of the ship whose position
          * it is representing.  For instance:
-         * 
+         *
          *      Submarine:  {"E5", "F5", "G5"}          // valid
          *      Submarine:  {"E5", "F5", "G6"}          // invalid
          *      Cruiser:    {"E5", "F5", "G5"}          // invalid
@@ -84,8 +165,98 @@ namespace Oceania
          *      Destroyer:  {"L1", "K1"}                // invalid
          */
 
-
         /* Return the location of your Aircraft Carrier */
+
+        private void advHunt(TorpedoShot shot, bool wasHit)
+        {
+            int row = (int)Char.Parse(shot.Row) - 64;
+            int col = Int32.Parse(shot.Column);
+
+
+            int orow = (int)Char.Parse(origin.Row) - 64;
+            int ocol = Int32.Parse(origin.Column);
+
+
+
+            if (isVertical)
+            {
+                TorpedoShot nextShot = new TorpedoShot(((char)('A' + (row - 1))).ToString(), (col).ToString());
+                if (row > 1)
+                {
+                    nextShot = new TorpedoShot(((char)('A' + (row - 2))).ToString(), (col).ToString());
+                }
+
+                if (nextShot.Row == origin.Row && nextShot.Column == origin.Column && orow > 1)
+                {
+                    nextShot = new TorpedoShot(((char)('A' + (orow - 2))).ToString(), (ocol).ToString());
+                }
+                if (!wasHit && row < 10 || row == 1 || hits.Contains("" + nextShot.Row + nextShot.Column))
+                {
+                    nextShot = new TorpedoShot(((char)('A' + (orow))).ToString(), (ocol).ToString());
+                    origin = nextShot;
+
+                }
+                shotsToTake.Enqueue(nextShot);
+                shotsAlreadyTaken.Add(nextShot.Row + nextShot.Column);
+            }
+            else
+            {
+                TorpedoShot nextShot = new TorpedoShot(((char)('A' + (row - 1))).ToString(), (col).ToString());
+                if (col > 1)
+                {
+                    nextShot = new TorpedoShot(((char)('A' + (row - 1))).ToString(), (col - 1).ToString());
+                }
+                if (nextShot.Row == origin.Row && nextShot.Column == origin.Column && ocol > 1)
+                {
+                    nextShot = new TorpedoShot(((char)('A' + (orow - 1))).ToString(), (ocol - 1).ToString());
+                }
+                if (!wasHit && col < 11 || col == 1 || hits.Contains("" + nextShot.Row + nextShot.Column))
+                {
+                    nextShot = new TorpedoShot(((char)('A' + (orow - 1))).ToString(), (ocol + 1).ToString());
+                    origin = nextShot;
+                }
+                shotsToTake.Enqueue(nextShot);
+                shotsAlreadyTaken.Add(nextShot.Row + nextShot.Column);
+            }
+
+        }
+        private void hunt(TorpedoShot shot)
+        {
+            if (shotsToTake.Count == 0)
+            {
+                int row = (int)Char.Parse(shot.Row) - 64;
+                int col = Int32.Parse(shot.Column);
+
+                TorpedoShot shot1;
+                TorpedoShot shot2;
+                TorpedoShot shot3;
+                TorpedoShot shot4;
+
+                if (col > 1)
+                {
+                    shot1 = new TorpedoShot(((char)('A' + row - 1)).ToString(), (col - 1).ToString());
+                    shotsToTake.Enqueue(shot1);
+                }
+                if (row < 10)
+                {
+                    shot2 = new TorpedoShot(((char)('A' + (row))).ToString(), (col).ToString());
+                    shotsToTake.Enqueue(shot2);
+                }
+                if (col < 11)
+                {
+                    shot3 = new TorpedoShot(((char)('A' + row - 1)).ToString(), (col + 1).ToString());
+                    shotsToTake.Enqueue(shot3);
+                }
+                if (row > 1)
+                {
+                    shot4 = new TorpedoShot(((char)('A' + (row - 2))).ToString(), (col).ToString());
+                    shotsToTake.Enqueue(shot4);
+                }
+
+
+
+            }
+        }
         public string[] GetAircraftCarrier()
         {
             return aircraftCarrier;
