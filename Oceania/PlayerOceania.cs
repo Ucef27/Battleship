@@ -141,11 +141,11 @@ namespace Oceania
         public void Reset()
         {
             shotsAlreadyTaken = new List<string>();
-            aircraftCarrier = new string[5] { "E3", "E4", "E5", "E6", "E7" };
-            battleship = new string[4] { "G7", "G8", "G9", "G10" };
-            cruiser = new string[3] { "J1", "J2", "J3" };
-            submarine = new string[3] { "A10", "B10", "C10" };
-            destroyer = new string[2] { "A4", "A5" };
+            aircraftCarrier = new string[5] { "F10", "G10", "H10", "I10", "J10" };
+            battleship = new string[4] { "A7", "A8", "A9", "A10" };
+            cruiser = new string[3] { "H1", "I1", "J1" };
+            submarine = new string[3] { "C1", "D1", "E1" };
+            destroyer = new string[2] { "A1", "A2" };
         }
 
         /* Ship locations are only valid if the ship is positioned horizontally or vertically.

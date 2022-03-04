@@ -15,6 +15,8 @@ namespace Eurasia
         private int[,] board = new int[10, 10];
         private int[,] hits_per_shot = new int[10, 10];
 
+        private int[,] previous_hits_per_shot = new int[10, 10];
+
         private Dictionary<String, int> ship_size = new Dictionary<string, int>() { { "Aircraft Carrier", 5 }, { "Battleship", 4 }, { "Submarine", 3 }, { "Cruiser", 3 }, { "Destroyer", 2 } };
 
         private int[] alive_ships = new int[] { 2, 3, 3, 4, 5 };
@@ -39,6 +41,8 @@ namespace Eurasia
         public TorpedoShot NextMove()
         {
             TorpedoShot shot = new TorpedoShot();
+
+            previous_hits_per_shot = hits_per_shot;
             hits_per_shot = new int[10, 10];
 
             int row;
@@ -270,22 +274,26 @@ namespace Eurasia
         private Tuple<int, int> find_max()
         {
             int max_value = 0;
-            int max_row = 0;
-            int max_column = 0;
+            List<Tuple<int, int>> maxs = new List<Tuple<int, int>>();
             for (int i = 0; i < 10; i++)
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    if (hits_per_shot[i, j] > max_value)
+                    if (hits_per_shot[i, j] >= max_value)
                     {
-                        max_value = hits_per_shot[i, j];
-                        max_row = i;
-                        max_column = j;
+
+                        if (hits_per_shot[i, j] > max_value)
+                        {
+                            maxs.Clear();
+                            max_value = hits_per_shot[i, j];
+                        }
+
+                        maxs.Add(Tuple.Create(i, j));
                     }
                 }
             }
-
-            return Tuple.Create(max_row, max_column);
+            Random r = new Random();
+            return maxs[r.Next(0, maxs.Count)];
         }
 
 

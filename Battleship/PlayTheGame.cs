@@ -77,9 +77,9 @@ namespace Battleship
                     {
                         eurasia_ships_hit[(Ships)i].Add(shot_location);
                         isHit = true;
-                        if (oceania_ships_hit[(Ships)i].Count == oceania_ships[(Ships)i].Count)
+                        if (eurasia_ships_hit[(Ships)i].Count == eurasia_ships[(Ships)i].Count)
                         {
-                            oceania_ships_hit[(Ships)i].Add("MILF");
+                            eurasia_ships_hit[(Ships)i].Add("MILF");
                             sunk = convert[(Ships)i];
 
                         }
