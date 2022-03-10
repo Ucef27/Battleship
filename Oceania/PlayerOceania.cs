@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Diagnostics;
 using System.Collections;
 using Torpedo;
 
@@ -14,8 +15,10 @@ namespace Oceania
         private bool isVertical;
         private bool huntMode = false;
         private bool advHuntMode = false;
-        Queue<TorpedoShot> shotsToTake = new Queue<TorpedoShot>();
-        ArrayList hits = new ArrayList();
+        private int parity = 0;
+        private Queue<TorpedoShot> shotsToTake = new Queue<TorpedoShot>();
+        private List<string> shipLocations = new List<string>();
+        private ArrayList hits = new ArrayList();
         private TorpedoShot origin = new TorpedoShot();
         Dictionary<string, int> shipsNotSunk = new Dictionary<string, int>()
         {
@@ -59,9 +62,24 @@ namespace Oceania
                 else
                 {
                     Random random = new Random();
+                    //Debug.WriteLine(parity);
                     int row = random.Next(10);
                     int column = random.Next(10) + 1;
-                    if (Math.Pow(-1, row + column) > 0)
+                    if (Math.Pow(-1, row + column) > 0 && parity == 0)
+                    {
+                        shot = new TorpedoShot(((char)('A' + row)).ToString(), column.ToString());
+                        stringShot = shot.Row + shot.Column;
+                        if (shotsAlreadyTaken.Contains(stringShot))
+                        {
+                            stringShot = "";
+                        }
+                        else
+                        {
+                            shotsAlreadyTaken.Add(stringShot);
+                        }
+
+                    }
+                    else if (Math.Pow(-1, row + column) < 0 && parity == 1)
                     {
                         shot = new TorpedoShot(((char)('A' + row)).ToString(), column.ToString());
                         stringShot = shot.Row + shot.Column;
@@ -85,7 +103,6 @@ namespace Oceania
 
             }
 
-            
             return shot;
         }
 
@@ -100,8 +117,11 @@ namespace Oceania
             {
                 huntMode = false;
                 advHuntMode = false;
-                shipsNotSunk.Remove(result.Sunk);
+                shipLocations.Add("" + result.Shot.Row + result.Shot.Column);
                 shotsToTake.Clear();
+                checkEdges(result.Sunk);
+                shipsNotSunk.Remove(result.Sunk);
+                shipLocations.Clear();
             }
             if (huntMode && result.WasHit)
             {
@@ -117,6 +137,7 @@ namespace Oceania
                     }
                 }
                 hits.Add("" + result.Shot.Row + result.Shot.Column);
+                shipLocations.Add("" + result.Shot.Row + result.Shot.Column);
                 advHuntMode = true;
             }
             if (advHuntMode && result.Sunk.Length == 0)
@@ -129,6 +150,7 @@ namespace Oceania
                 lastShot = result.Shot;
                 origin = result.Shot;
                 hits.Add("" + result.Shot.Row + result.Shot.Column);
+                shipLocations.Add("" + result.Shot.Row + result.Shot.Column);
                 huntMode = true;
                 hunt(result.Shot);
             }
@@ -141,6 +163,19 @@ namespace Oceania
         public void Reset()
         {
             shotsAlreadyTaken = new List<string>();
+            Random random = new Random();
+            parity = random.Next(2);
+            shotsToTake.Clear();
+            shipLocations.Clear();
+            hits.Clear();
+            shipsNotSunk = new Dictionary<string, int>()
+            {
+                {"Aircraft Carrier", 5 },
+                {"Battleship", 4 },
+                {"Cruiser", 3 },
+                {"Submarine", 3 },
+                {"Destroyer", 2 }
+            };
             aircraftCarrier = new string[5] { "F10", "G10", "H10", "I10", "J10" };
             battleship = new string[4] { "A7", "A8", "A9", "A10" };
             cruiser = new string[3] { "H1", "I1", "J1" };
@@ -190,7 +225,7 @@ namespace Oceania
                 {
                     nextShot = new TorpedoShot(((char)('A' + (orow - 2))).ToString(), (ocol).ToString());
                 }
-                if (!wasHit && row < 10 || row == 1 || hits.Contains("" + nextShot.Row + nextShot.Column))
+                if (!wasHit && row < 10 || row == 1 || hits.Contains("" + nextShot.Row + nextShot.Column) || shotsAlreadyTaken.Contains("" + nextShot.Row + nextShot.Column) && row < 10)
                 {
                     nextShot = new TorpedoShot(((char)('A' + (orow))).ToString(), (ocol).ToString());
                     origin = nextShot;
@@ -210,11 +245,12 @@ namespace Oceania
                 {
                     nextShot = new TorpedoShot(((char)('A' + (orow - 1))).ToString(), (ocol - 1).ToString());
                 }
-                if (!wasHit && col < 11 || col == 1 || hits.Contains("" + nextShot.Row + nextShot.Column))
+                if (!wasHit && col < 11 || col == 1 || hits.Contains("" + nextShot.Row + nextShot.Column) || shotsAlreadyTaken.Contains("" + nextShot.Row + nextShot.Column) && col < 11)
                 {
                     nextShot = new TorpedoShot(((char)('A' + (orow - 1))).ToString(), (ocol + 1).ToString());
                     origin = nextShot;
                 }
+
                 shotsToTake.Enqueue(nextShot);
                 shotsAlreadyTaken.Add(nextShot.Row + nextShot.Column);
             }
@@ -235,26 +271,142 @@ namespace Oceania
                 if (col > 1)
                 {
                     shot1 = new TorpedoShot(((char)('A' + row - 1)).ToString(), (col - 1).ToString());
-                    shotsToTake.Enqueue(shot1);
+                    if (!shotsAlreadyTaken.Contains("" + shot1.Row + shot1.Column))
+                    {
+                        shotsToTake.Enqueue(shot1);
+                    }
                 }
                 if (row < 10)
                 {
                     shot2 = new TorpedoShot(((char)('A' + (row))).ToString(), (col).ToString());
-                    shotsToTake.Enqueue(shot2);
+                    if (!shotsAlreadyTaken.Contains("" + shot2.Row + shot2.Column))
+                    {
+                        shotsToTake.Enqueue(shot2);
+                    }
                 }
                 if (col < 11)
                 {
                     shot3 = new TorpedoShot(((char)('A' + row - 1)).ToString(), (col + 1).ToString());
-                    shotsToTake.Enqueue(shot3);
+                    if (!shotsAlreadyTaken.Contains("" + shot3.Row + shot3.Column))
+                    {
+                        shotsToTake.Enqueue(shot3);
+                    }
                 }
                 if (row > 1)
                 {
                     shot4 = new TorpedoShot(((char)('A' + (row - 2))).ToString(), (col).ToString());
-                    shotsToTake.Enqueue(shot4);
+                    if (!shotsAlreadyTaken.Contains("" + shot4.Row + shot4.Column))
+                    {
+                        shotsToTake.Enqueue(shot4);
+                    }
                 }
 
 
 
+            }
+        }
+
+        public void checkEdges(string ship)
+        {
+            shipLocations.Sort();
+            //for (int i = 0; i < shipLocations.Count; i++)
+            //{
+            //    Debug.WriteLine("[" + shipLocations[i] + "]");
+            //}
+
+            if (isVertical && shipsNotSunk[ship] < shipLocations.Count)
+            {
+                //Grabbing furthest left and right locations
+                int topRow = (int)Char.Parse("" + shipLocations[0][0]) - 64;
+                int topCol = Int32.Parse("" + shipLocations[0][1]);
+
+                int botRow = (int)Char.Parse("" + shipLocations[shipLocations.Count - 1][0]) - 64;
+                int botCol = Int32.Parse("" + shipLocations[shipLocations.Count - 1][1]);
+
+                TorpedoShot shot1;
+                TorpedoShot shot2;
+                TorpedoShot shot3;
+                TorpedoShot shot4;
+
+                if (topCol > 1)
+                {
+                    shot1 = new TorpedoShot(((char)('A' + topRow - 1)).ToString(), (topCol - 1).ToString());
+                    if (!shotsAlreadyTaken.Contains("" + shot1.Row + shot1.Column))
+                    {
+                        shotsToTake.Enqueue(shot1);
+                    }
+                }
+                if (topCol < 11)
+                {
+                    shot2 = new TorpedoShot(((char)('A' + topRow - 1)).ToString(), (topCol + 1).ToString());
+                    if (!shotsAlreadyTaken.Contains("" + shot2.Row + shot2.Column))
+                    {
+                        shotsToTake.Enqueue(shot2);
+                    }
+                }
+                if (botCol > 1)
+                {
+                    shot3 = new TorpedoShot(((char)('A' + botRow - 1)).ToString(), (botCol - 1).ToString());
+                    if (!shotsAlreadyTaken.Contains("" + shot3.Row + shot3.Column))
+                    {
+                        shotsToTake.Enqueue(shot3);
+                    }
+                }
+                if (botCol < 11)
+                {
+                    shot4 = new TorpedoShot(((char)('A' + botRow - 1)).ToString(), (botCol + 1).ToString());
+                    if (!shotsAlreadyTaken.Contains("" + shot4.Row + shot4.Column))
+                    {
+                        shotsToTake.Enqueue(shot4);
+                    }
+                }
+            }
+            else if (!isVertical && shipsNotSunk[ship] < shipLocations.Count)
+            {
+                //Grabbing furthest left and right locations
+                int leftRow = (int)Char.Parse("" + shipLocations[0][0]) - 64;
+                int leftCol = Int32.Parse("" + shipLocations[0][1]);
+
+                int rigRow = (int)Char.Parse("" + shipLocations[shipLocations.Count - 1][0]) - 64;
+                int rigCol = Int32.Parse("" + shipLocations[shipLocations.Count - 1][1]);
+
+                TorpedoShot shot1;
+                TorpedoShot shot2;
+                TorpedoShot shot3;
+                TorpedoShot shot4;
+
+                if (leftRow < 10)
+                {
+                    shot1 = new TorpedoShot(((char)('A' + (leftRow))).ToString(), (leftCol).ToString());
+                    if (!shotsAlreadyTaken.Contains("" + shot1.Row + shot1.Column))
+                    {
+                        shotsToTake.Enqueue(shot1);
+                    }
+                }
+                if (leftRow > 1)
+                {
+                    shot2 = new TorpedoShot(((char)('A' + (leftRow - 2))).ToString(), (leftCol).ToString());
+                    if (!shotsAlreadyTaken.Contains("" + shot2.Row + shot2.Column))
+                    {
+                        shotsToTake.Enqueue(shot2);
+                    }
+                }
+                if (rigRow < 10)
+                {
+                    shot3 = new TorpedoShot(((char)('A' + (rigRow))).ToString(), (rigCol).ToString());
+                    if (!shotsAlreadyTaken.Contains("" + shot3.Row + shot3.Column))
+                    {
+                        shotsToTake.Enqueue(shot3);
+                    }
+                }
+                if (rigRow > 1)
+                {
+                    shot4 = new TorpedoShot(((char)('A' + (rigRow - 2))).ToString(), (rigCol).ToString());
+                    if (!shotsAlreadyTaken.Contains("" + shot4.Row + shot4.Column))
+                    {
+                        shotsToTake.Enqueue(shot4);
+                    }
+                }
             }
         }
         public string[] GetAircraftCarrier()

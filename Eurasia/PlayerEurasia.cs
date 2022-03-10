@@ -31,6 +31,10 @@ namespace Eurasia
         ArrayList hits = new ArrayList();
         private Tuple<int, int> originShot;
 
+        private List<Tuple<int, int>> corners = new List<Tuple<int, int>>() { Tuple.Create(0, 0), Tuple.Create(9, 0), Tuple.Create(0, 9), Tuple.Create(9, 9), Tuple.Create(0, 4), Tuple.Create(4, 0), Tuple.Create(4, 9), Tuple.Create(9, 4) };
+
+        private int turn = 1;
+
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
          * Locations in this game always start with a letter A - J, and are followed by a number 1 - 10.
@@ -69,6 +73,39 @@ namespace Eurasia
                 column = foo.Item2;
             }
 
+            else if (turn % 5 == 0 && corners.Count > 0)
+            {
+
+                Tuple<int, int> temp = shotHistory[0];
+                Random r = new Random();
+                bool skip = false;
+                while (shotHistory.Contains(temp))
+                {
+                    if (corners.Count == 0) {
+                        skip = true;
+                        break;
+                    }
+                    int check = r.Next(0, corners.Count);
+                    temp = corners[check];
+                    corners.RemoveAt(check);
+
+                }
+
+                if (skip)
+                {
+                    location = find_max();
+                    row = location.Item1;
+                    column = location.Item2;
+                }
+
+                else
+                {
+                    row = temp.Item1;
+                    column = temp.Item2;
+                }
+                
+            }
+
             else
             {
                 location = find_max();
@@ -83,6 +120,7 @@ namespace Eurasia
             shot = new TorpedoShot(((char)('A' + row)).ToString(), (column + 1).ToString());
 
             //board[row, column] = 1;
+            turn++;
             return shot;
         }
 
@@ -153,7 +191,27 @@ namespace Eurasia
          * resetting your internal data for a "rematch". */
         public void Reset()
         {
+            board = new int[10, 10];
+            hits_per_shot = new int[10, 10];
 
+            previous_hits_per_shot = new int[10, 10];
+
+            ship_size = new Dictionary<string, int>() { { "Aircraft Carrier", 5 }, { "Battleship", 4 }, { "Submarine", 3 }, { "Cruiser", 3 }, { "Destroyer", 2 } };
+
+            alive_ships = new int[] { 2, 3, 3, 4, 5 };
+
+            shotHistory = new List<Tuple<int, int>>();
+
+            huntMode = false;
+
+            advancedHuntMode = false;
+            isVerticle = false;
+            shotsToTake = new Queue<Tuple<int, int>>();
+            hits = new ArrayList();
+
+            corners = new List<Tuple<int, int>>() { Tuple.Create(0, 0), Tuple.Create(9, 0), Tuple.Create(0, 9), Tuple.Create(9, 9), Tuple.Create(0, 4), Tuple.Create(4, 0), Tuple.Create(4, 9), Tuple.Create(9, 4) };
+
+            turn = 1;
         }
 
         /* Ship locations are only valid if the ship is positioned horizontally or vertically.
