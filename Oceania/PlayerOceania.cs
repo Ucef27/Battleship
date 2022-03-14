@@ -20,6 +20,7 @@ namespace Oceania
         private List<string> shipLocations = new List<string>();
         private ArrayList hits = new ArrayList();
         private TorpedoShot origin = new TorpedoShot();
+        private int[] parityThree = { 4, 7, 10, 13, 16, 19 };
         Dictionary<string, int> shipsNotSunk = new Dictionary<string, int>()
         {
             {"Aircraft Carrier", 5 },
@@ -57,9 +58,10 @@ namespace Oceania
                 if (shotsToTake.Count != 0)
                 {
                     shot = shotsToTake.Dequeue();
-                    stringShot = shot.Row + shot.Column;
+
+                    stringShot = "" + shot.Row + shot.Column;
                 }
-                else
+                else if (shipsNotSunk.Count == 1 && shipsNotSunk.ContainsKey("Destroyer"))
                 {
                     Random random = new Random();
                     //Debug.WriteLine(parity);
@@ -68,8 +70,8 @@ namespace Oceania
                     if (Math.Pow(-1, row + column) > 0 && parity == 0)
                     {
                         shot = new TorpedoShot(((char)('A' + row)).ToString(), column.ToString());
-                        stringShot = shot.Row + shot.Column;
-                        if (shotsAlreadyTaken.Contains(stringShot))
+                        stringShot = "" + shot.Row + shot.Column;
+                        if (shotsAlreadyTaken.Contains(stringShot) || hits.Contains(stringShot))
                         {
                             stringShot = "";
                         }
@@ -82,8 +84,8 @@ namespace Oceania
                     else if (Math.Pow(-1, row + column) < 0 && parity == 1)
                     {
                         shot = new TorpedoShot(((char)('A' + row)).ToString(), column.ToString());
-                        stringShot = shot.Row + shot.Column;
-                        if (shotsAlreadyTaken.Contains(stringShot))
+                        stringShot = "" + shot.Row + shot.Column;
+                        if (shotsAlreadyTaken.Contains(stringShot) || hits.Contains(stringShot))
                         {
                             stringShot = "";
                         }
@@ -97,6 +99,26 @@ namespace Oceania
                     {
                         stringShot = "";
                     }
+                }
+                else
+                {
+                    Random random = new Random();
+                    int row = random.Next(10);
+                    int column = random.Next(10) + 1;
+                    if (parityThree.Contains((row + 1) + column))
+                    {
+                        shot = new TorpedoShot(((char)('A' + row)).ToString(), column.ToString());
+                        stringShot = "" + shot.Row + shot.Column;
+                        if (shotsAlreadyTaken.Contains(stringShot) || hits.Contains(stringShot))
+                        {
+                            stringShot = "";
+                        }
+                        else
+                        {
+                            shotsAlreadyTaken.Add(stringShot);
+                        }
+                    }
+
                 }
 
 
@@ -176,11 +198,11 @@ namespace Oceania
                 {"Submarine", 3 },
                 {"Destroyer", 2 }
             };
-            aircraftCarrier = new string[5] { "F10", "G10", "H10", "I10", "J10" };
-            battleship = new string[4] { "A7", "A8", "A9", "A10" };
-            cruiser = new string[3] { "H1", "I1", "J1" };
-            submarine = new string[3] { "C1", "D1", "E1" };
-            destroyer = new string[2] { "A1", "A2" };
+            aircraftCarrier = new string[5] { "F9", "G9", "H9", "I9", "J9" };
+            battleship = new string[4] { "A6", "A7", "A8", "A9" };
+            cruiser = new string[3] { "G1", "H1", "I1" };
+            submarine = new string[3] { "B1", "C1", "D1" };
+            destroyer = new string[2] { "F10", "G10" };
         }
 
         /* Ship locations are only valid if the ship is positioned horizontally or vertically.
