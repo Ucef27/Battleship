@@ -8,7 +8,8 @@
         Title="MainWindow" Height="1200" Width="1200">
     <Grid>
         <Canvas Name="myCanvas">
-            <Grid Name="Oceania" Height="300" Width="300" Canvas.Left="762" Canvas.Top="112">
+            <Label Canvas.Left="849" Canvas.Top="387" FontSize="30">Oceania</Label>
+            <Grid Name="Oceania" Height="300" Width="300" Canvas.Left="757" Canvas.Top="442">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
@@ -36,7 +37,8 @@
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
             </Grid>
-            <Grid Name="Eurasia" Height="300" Width="300" Canvas.Left="762" Canvas.Top="534">
+            <Label Canvas.Left="231" Canvas.Top="387" FontSize="30">Eurasia</Label>
+            <Grid Name="Eurasia" Height="300" Width="300" Canvas.Left="133" Canvas.Top="442">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />

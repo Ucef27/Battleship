@@ -41,7 +41,9 @@ namespace Eurasia
 
         private bool checkExtra = false;
 
-        private List<Tuple<int, int>> shotsToCheck;
+        private List<Tuple<int, int>> shotsToCheck = new List<Tuple<int, int>>() {};
+
+        private bool working = false;
 
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
@@ -73,11 +75,18 @@ namespace Eurasia
                 find_hits_per_spot(i);
             }
 
-            if (checkExtra)
+            if (checkExtra && !working)
             {
                 advancedHuntMode = true;
                 isVerticle = true;
                 originShot = shotsToCheck[0];
+                shotsToCheck.RemoveAt(0);
+                working = true;
+
+                if (shotsToCheck.Count == 0)
+                {
+                    checkExtra = false;
+                }
                 advancedHunt(originShot, true);
 
             }
@@ -156,8 +165,7 @@ namespace Eurasia
             if (result.WasHit)
             {
                 board[shot_location.Item1, shot_location.Item2] = 2;
-                hitHistory.Append(shot_location);
-                shotsToTake.Append(shot_location);
+                shotsToCheck.Add(shot_location);
             }
 
             else
@@ -174,7 +182,9 @@ namespace Eurasia
                 var foos = new List<int>(alive_ships);
                 foos.Remove(ship_size[result.Sunk]);
                 alive_ships = foos.ToArray();
-                shotsToTake.Clear();
+                working = false;
+
+                shotsToCheck = shotsToCheck.GetRange(0, shotsToCheck.Count - ship_size[result.Sunk]);
             }
 
             if (huntMode && result.WasHit)
