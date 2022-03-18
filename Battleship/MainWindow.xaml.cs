@@ -34,10 +34,15 @@ namespace Battleship
         private Dictionary<Ships, HashSet<String>> oceania_ships_hit = new Dictionary<Ships, HashSet<string>>();
         private Dictionary<Ships, HashSet<String>> eurasia_ships_hit = new Dictionary<Ships, HashSet<string>>();
 
+        private bool oceania_turn = true;
+
+        private int osunk = 0;
+        private int esunk = 0;
+
         private Dictionary<Ships, String> convert = new Dictionary<Ships, string>();
 
 
-        private bool oceania_turn = true;
+        
 
 
 
@@ -61,6 +66,53 @@ namespace Battleship
                 rect.Height = 45;
                 SolidColorBrush blueBrush = new SolidColorBrush();
                 blueBrush.Color = Colors.Red;
+                rect.Fill = blueBrush;
+
+
+                Grid.SetRow(rect, row);
+                Grid.SetColumn(rect, column);
+
+                g.Children.Add(rect);
+
+            }
+
+            else
+            {
+                Rectangle rect = new Rectangle();
+                rect.Width = 100;
+                rect.Height = 100;
+                SolidColorBrush blueBrush = new SolidColorBrush();
+                blueBrush.Color = Colors.Blue;
+                rect.Fill = blueBrush;
+
+
+                Grid.SetRow(rect, row);
+                Grid.SetColumn(rect, column);
+
+                g.Children.Add(rect);
+            }
+        }
+
+        private void place_reset(int row, int column, bool hit, bool Oceana)
+        {
+            Grid g;
+            if (Oceana)
+            {
+                g = this.Oceania;
+            }
+
+            else
+            {
+                g = this.Eurasia;
+            }
+
+            if (hit)
+            {
+                Rectangle rect = new Rectangle();
+                rect.Width = 45;
+                rect.Height = 45;
+                SolidColorBrush blueBrush = new SolidColorBrush();
+                blueBrush.Color = Colors.White;
                 rect.Fill = blueBrush;
 
 
@@ -223,8 +275,28 @@ namespace Battleship
             convert[Ships.Submarine] = "Submarine";
             convert[Ships.Destroyer] = "Destroyer";
 
+            
+
+            
+            
+            
 
 
+
+            //startGame();
+
+
+
+        }
+
+        private void buttonBegin(object sender, RoutedEventArgs e)
+        {
+            run();
+            Begin.Visibility = Visibility.Hidden;
+        }
+
+        private void run()
+        {
             setup();
 
             drawShips();
@@ -234,13 +306,46 @@ namespace Battleship
             dispatcherTimer.Tick += new EventHandler(startGame);
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(50);
             dispatcherTimer.Start();
+        }
+
+        private void completeReset(object sender, RoutedEventArgs e)
+        {
+            oceania = new PlayerOceania();
+            eurasia = new PlayerEurasia();
+
+            oceania_ships = new Dictionary<Ships, HashSet<string>>();
+            eurasia_ships = new Dictionary<Ships, HashSet<string>>();
+            oceania_ships_hit = new Dictionary<Ships, HashSet<string>>();
+            eurasia_ships_hit = new Dictionary<Ships, HashSet<string>>();
+
+            oceania_turn = true;
+
+            osunk = 0;
+            esunk = 0;
 
 
+            Rectangle rect = new Rectangle();
 
-            //startGame();
+            for (int i = 0; i < this.Oceania.Children.Count; i++)
+            {
 
+                if (this.Oceania.Children[i].GetType().Equals(rect.GetType()))
+                {
+                    this.Oceania.Children.RemoveAt(i);
+                    i--;
+                }
+            }
 
+            for (int i = 0; i < this.Eurasia.Children.Count; i++)
+            {
+                if (this.Eurasia.Children[i].GetType().Equals(rect.GetType()))
+                {
+                    this.Eurasia.Children.RemoveAt(i);
+                    i--;
+                }
+            }
 
+            run();
         }
 
         private void drawShips()

@@ -202,7 +202,7 @@ namespace Oceania
             battleship = new string[4] { "A6", "A7", "A8", "A9" };
             cruiser = new string[3] { "G1", "H1", "I1" };
             submarine = new string[3] { "B1", "C1", "D1" };
-            destroyer = new string[2] { "F10", "G10" };
+            destroyer = new string[2] { "F7", "G7" };
         }
 
         /* Ship locations are only valid if the ship is positioned horizontally or vertically.

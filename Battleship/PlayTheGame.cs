@@ -27,20 +27,25 @@ namespace Battleship
     public partial class MainWindow : Window
     {
 
+        
+
         private void setup()
         {
             oceania.Reset();
+            eurasia.Reset();
+
             oceania_ships[Ships.AircraftCarrier] = new HashSet<String>(oceania.GetAircraftCarrier());
             oceania_ships[Ships.Battleship] = new HashSet<String>(oceania.GetBattleship());
             oceania_ships[Ships.Cruiser] = new HashSet<String>(oceania.GetCruiser());
             oceania_ships[Ships.Submarine] = new HashSet<String>(oceania.GetSubmarine());
             oceania_ships[Ships.Destroyer] = new HashSet<String>(oceania.GetDestroyer());
 
-            eurasia_ships[Ships.AircraftCarrier] = new HashSet<String>(oceania.GetAircraftCarrier());
-            eurasia_ships[Ships.Battleship] = new HashSet<String>(oceania.GetBattleship());
-            eurasia_ships[Ships.Cruiser] = new HashSet<String>(oceania.GetCruiser());
-            eurasia_ships[Ships.Submarine] = new HashSet<String>(oceania.GetSubmarine());
-            eurasia_ships[Ships.Destroyer] = new HashSet<String>(oceania.GetDestroyer());
+            
+            eurasia_ships[Ships.AircraftCarrier] = new HashSet<String>(eurasia.GetAircraftCarrier());
+            eurasia_ships[Ships.Battleship] = new HashSet<String>(eurasia.GetBattleship());
+            eurasia_ships[Ships.Cruiser] = new HashSet<String>(eurasia.GetCruiser());
+            eurasia_ships[Ships.Submarine] = new HashSet<String>(eurasia.GetSubmarine());
+            eurasia_ships[Ships.Destroyer] = new HashSet<String>(eurasia.GetDestroyer());
 
             oceania_ships_hit[Ships.AircraftCarrier] = new HashSet<String>();
             oceania_ships_hit[Ships.Battleship] = new HashSet<String>();
@@ -81,13 +86,14 @@ namespace Battleship
                         {
                             eurasia_ships_hit[(Ships)i].Add("MILF");
                             sunk = convert[(Ships)i];
+                            osunk++;
 
                         }
                         break;
                     }
                 }
 
-                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, true);
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, false);
                 oceania.ResultOfShot(new TorpedoResult(currentShot, isHit, sunk));
                 oceania_turn = false;
                 
@@ -114,18 +120,28 @@ namespace Battleship
                         {
                             oceania_ships_hit[(Ships)i].Add("LOLI");
                             sunk = convert[(Ships)i];
+                            esunk++;
 
                         }
                         break;
                     }
                 }
 
-                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, false);
+                place(char.Parse(currentShot.Row) - 64, Int32.Parse(currentShot.Column), isHit, true);
                 eurasia.ResultOfShot(new TorpedoResult(currentShot, isHit, sunk));
                 oceania_turn = true;
             }
 
-            
+            if (osunk == 5)
+            {
+                dispatcherTimer.Stop();
+            }
+
+            if (esunk == 5)
+            {
+                dispatcherTimer.Stop();
+            }
+
         }
     }
 }

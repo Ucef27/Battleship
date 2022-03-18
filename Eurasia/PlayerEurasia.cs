@@ -23,8 +23,6 @@ namespace Eurasia
 
         private List<Tuple<int, int>> shotHistory = new List<Tuple<int, int>>();
 
-        private List<Tuple<int, int>> hitHistory = new List<Tuple<int, int>>();
-
         private bool huntMode = false;
 
         private bool advancedHuntMode = false;
@@ -36,14 +34,6 @@ namespace Eurasia
         private List<Tuple<int, int>> corners = new List<Tuple<int, int>>() { Tuple.Create(0, 0), Tuple.Create(9, 0), Tuple.Create(0, 9), Tuple.Create(9, 9), Tuple.Create(0, 4), Tuple.Create(4, 0), Tuple.Create(4, 9), Tuple.Create(9, 4) };
 
         private int turn = 1;
-
-        private int misses = 0;
-
-        private bool checkExtra = false;
-
-        private List<Tuple<int, int>> shotsToCheck = new List<Tuple<int, int>>() {};
-
-        private bool working = false;
 
 
         /* The NextMove() method is called every time the main program needs a torpedo shot from this player.
@@ -61,7 +51,7 @@ namespace Eurasia
 
             int row;
             int column;
-            
+
 
             Tuple<int, int> location;
 
@@ -75,21 +65,6 @@ namespace Eurasia
                 find_hits_per_spot(i);
             }
 
-            if (checkExtra && !working)
-            {
-                advancedHuntMode = true;
-                isVerticle = true;
-                originShot = shotsToCheck[0];
-                shotsToCheck.RemoveAt(0);
-                working = true;
-
-                if (shotsToCheck.Count == 0)
-                {
-                    checkExtra = false;
-                }
-                advancedHunt(originShot, true);
-
-            }
 
             if (shotsToTake.Count != 0)
             {
@@ -97,7 +72,6 @@ namespace Eurasia
                 row = foo.Item1;
                 column = foo.Item2;
             }
-
 
             else if (turn % 5 == 0 && corners.Count > 0)
             {
@@ -107,7 +81,8 @@ namespace Eurasia
                 bool skip = false;
                 while (shotHistory.Contains(temp))
                 {
-                    if (corners.Count == 0) {
+                    if (corners.Count == 0)
+                    {
                         skip = true;
                         break;
                     }
@@ -129,7 +104,7 @@ namespace Eurasia
                     row = temp.Item1;
                     column = temp.Item2;
                 }
-                
+
             }
 
             else
@@ -139,10 +114,8 @@ namespace Eurasia
                 column = location.Item2;
             }
 
-            
 
 
-            
 
             shotHistory.Add(new Tuple<int, int>(row, column));
             shot = new TorpedoShot(((char)('A' + row)).ToString(), (column + 1).ToString());
@@ -165,7 +138,6 @@ namespace Eurasia
             if (result.WasHit)
             {
                 board[shot_location.Item1, shot_location.Item2] = 2;
-                shotsToCheck.Add(shot_location);
             }
 
             else
@@ -175,16 +147,12 @@ namespace Eurasia
 
             if (!result.Sunk.Equals(""))
             {
-                shotsToTake.Clear();
                 huntMode = false;
                 advancedHuntMode = false;
-                misses = 0;
                 var foos = new List<int>(alive_ships);
                 foos.Remove(ship_size[result.Sunk]);
                 alive_ships = foos.ToArray();
-                working = false;
-
-                shotsToCheck = shotsToCheck.GetRange(0, shotsToCheck.Count - ship_size[result.Sunk]);
+                shotsToTake.Clear();
             }
 
             if (huntMode && result.WasHit)
@@ -203,7 +171,7 @@ namespace Eurasia
                 }
 
                 advancedHuntMode = true;
-            } 
+            }
 
             if (advancedHuntMode && result.Sunk.Equals(""))
             {
@@ -310,7 +278,8 @@ namespace Eurasia
             {
                 for (int i = start.Item2; i < end.Item2; i++)
                 {
-                    if (board[start.Item1, i] == 1 || board[start.Item1, i] == 2) {
+                    if (board[start.Item1, i] == 1 || board[start.Item1, i] == 2)
+                    {
                         return false;
                     }
                 }
@@ -403,7 +372,6 @@ namespace Eurasia
                 if (col > 0)
                 {
                     shot1 = new Tuple<int, int>(row, col - 1);
-
                     if (!shotHistory.Contains(shot1))
                     {
                         shotsToTake.Enqueue(shot1);
@@ -463,6 +431,11 @@ namespace Eurasia
                 if (!wasHit && orow < 9 || orow == 0 || shotHistory.Contains(nextShot))
                 {
                     nextShot = new Tuple<int, int>(orow + 1, ocol);
+
+                    if (shotHistory.Contains(nextShot))
+                    {
+                        nextShot = new Tuple<int, int>(orow + 2, ocol);
+                    }
                     originShot = nextShot;
                 }
                 shotsToTake.Enqueue(nextShot);
@@ -484,20 +457,13 @@ namespace Eurasia
 
                 if (!wasHit && ocol < 9 || ocol == 0 || shotHistory.Contains(nextShot))
                 {
-                    misses++;
                     nextShot = new Tuple<int, int>(orow, ocol + 1);
+
+                    if (shotHistory.Contains(nextShot)) {
+                        nextShot = new Tuple<int, int>(orow, ocol + 2);
+                    }
                     originShot = nextShot;
                 }
-
-                if (misses == 2)
-                {
-                    shotsToTake.Clear();
-                    checkExtra = true;
-
-                }
-
-
-
                 shotsToTake.Enqueue(nextShot);
                 shotHistory.Add(nextShot);
             }

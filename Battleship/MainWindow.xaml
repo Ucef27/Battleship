@@ -8,8 +8,8 @@
         Title="MainWindow" Height="1200" Width="1200">
     <Grid>
         <Canvas Name="myCanvas">
-            <Label Canvas.Left="849" Canvas.Top="387" FontSize="30">Oceania</Label>
-            <Grid Name="Oceania" Height="300" Width="300" Canvas.Left="757" Canvas.Top="442">
+            <Label Canvas.Left="849" Canvas.Top="247" FontSize="30">Oceania</Label>
+            <Grid Name="Oceania" Height="300" Width="300" Canvas.Left="757" Canvas.Top="302">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
@@ -37,8 +37,8 @@
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
             </Grid>
-            <Label Canvas.Left="231" Canvas.Top="387" FontSize="30">Eurasia</Label>
-            <Grid Name="Eurasia" Height="300" Width="300" Canvas.Left="133" Canvas.Top="442">
+            <Label Canvas.Left="231" Canvas.Top="247" FontSize="30">Eurasia</Label>
+            <Grid Name="Eurasia" Height="300" Width="300" Canvas.Left="133" Canvas.Top="302">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
@@ -66,6 +66,8 @@
                     <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
             </Grid>
+            <Button Name ="Reset" Content="Reset" Click="completeReset" ClickMode="Press" Width="76" Height="30" Visibility="Visible" Canvas.Left="562" Canvas.Top="683"/>
+            <Button Name ="Begin" Content="Begin" Click="buttonBegin" ClickMode="Press" Width="76" Height="30" Visibility="Visible" Canvas.Left="562" Canvas.Top="267"/>
         </Canvas>
     </Grid>
 </Window>
